@@ -25,6 +25,11 @@ if (
   throw new Error("Run bash scripts/build-ucapika-ffmpeg.sh before packaging.");
 }
 
+// A blank CI secret is treated as a certificate at the working directory.
+for (const key of ["CSC_LINK", "CSC_NAME", "WIN_CSC_LINK"]) {
+  if (!process.env[key]?.trim()) delete process.env[key];
+}
+
 const config = { extends: path.join(__dirname, "..", "electron-builder.json") };
 if (mac) {
   const signed = Boolean(process.env.CSC_LINK || process.env.CSC_NAME);
@@ -45,7 +50,14 @@ build({
   targets: platform.createTarget([mac ? "dmg" : "nsis"], arch),
   config,
   publish: "never",
-}).catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+})
+  .then((artifacts) => {
+    const extension = mac ? ".dmg" : ".exe";
+    if (!artifacts.some((artifact) => artifact.endsWith(extension))) {
+      throw new Error(`Packaging completed without a ${extension} installer.`);
+    }
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
