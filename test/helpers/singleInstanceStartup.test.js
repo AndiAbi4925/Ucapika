@@ -15,6 +15,7 @@ function runStartup({ lockAvailable, hidden }) {
     commandLine: { appendSwitch() {} },
     getPath: () => "/fixture/user-data",
     setPath() {},
+    setName() {},
     setDesktopName() {},
     requestSingleInstanceLock: () => {
       events.push(["lock"]);

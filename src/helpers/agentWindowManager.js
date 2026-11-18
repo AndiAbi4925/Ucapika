@@ -89,7 +89,7 @@ class AgentWindowManager {
       void windowManager.selectionManager?.captureTarget?.({ force: true });
     }
     void this._show(() => windowManager._resolveActiveDisplay(targetPidPromise));
-    this._send("agent-window-hotkey", { external, selectionOnly });
+    this._send("agent-window-hotkey", selectionOnly ? { external, selectionOnly } : { external });
   }
 
   // The tray's and the pill menu's Ask assistant: no app was pressed in, so

@@ -357,6 +357,19 @@ test("a press before the renderer is ready reaches it once it is", () => {
   assert.deepEqual(win.sent, [{ channel: "agent-window-hotkey", payload: { external: true } }]);
 });
 
+test("the voice edit shortcut carries selection-only mode through renderer startup", () => {
+  created.length = 0;
+  const manager = new AgentWindowManager(createWindowManager(), { platform: "darwin" });
+  manager.handleHotkey({ selectionOnly: true });
+  const win = manager.window;
+  assert.deepEqual(win.sent, []);
+
+  manager.markReady(fromAgent(win));
+  assert.deepEqual(win.sent, [
+    { channel: "agent-window-hotkey", payload: { external: true, selectionOnly: true } },
+  ]);
+});
+
 test("layouts keep the bottom-center anchor and only a layout change sets bounds", async () => {
   const { manager, win } = await openedManager();
   const anchorBottom = win.bounds.y + win.bounds.height;
