@@ -1061,6 +1061,8 @@
         "descriptionClipboardFailed": "修飾鍵（如 Ctrl 或 Shift）仍處於按住狀態，因此未貼上文字，也無法複製到剪貼簿。"
       },
       "selectionEditing": {
+        "selectText": "使用語音編輯前，請先選取可編輯的文字。",
+        "editInstruction": "說出你希望如何改寫選取的文字。",
         "notAppliedTitle": "未套用選取文字編輯",
         "changed": "處理期間，選取的文字或目標應用程式已變更。未取代任何內容。",
         "expired": "選取文字編輯已逾時。請重新選取文字後再試。",

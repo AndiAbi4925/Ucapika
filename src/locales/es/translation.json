@@ -1061,6 +1061,8 @@
         "descriptionClipboardFailed": "Una tecla modificadora (como Ctrl o Mayús) seguía pulsada, así que el texto no se pegó y tampoco se pudo copiar al portapapeles."
       },
       "selectionEditing": {
+        "selectText": "Selecciona texto editable antes de usar la edición por voz.",
+        "editInstruction": "Di cómo quieres reformular el texto seleccionado.",
         "notAppliedTitle": "Edición de selección no aplicada",
         "changed": "El texto seleccionado o la aplicación de destino cambió durante el procesamiento. No se reemplazó nada.",
         "expired": "La edición caducó. Selecciona el texto e inténtalo de nuevo.",

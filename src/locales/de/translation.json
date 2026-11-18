@@ -1061,6 +1061,8 @@
         "descriptionClipboardFailed": "Eine Sondertaste (z. B. Strg oder Umschalt) war noch gedrückt. Der Text wurde nicht eingefügt und konnte auch nicht in die Zwischenablage kopiert werden."
       },
       "selectionEditing": {
+        "selectText": "Markiere editierbaren Text, bevor du ihn per Sprache bearbeitest.",
+        "editInstruction": "Sag, wie der markierte Text umgeschrieben werden soll.",
         "notAppliedTitle": "Auswahlbearbeitung nicht angewendet",
         "changed": "Der ausgewählte Text oder die Ziel-App wurde während der Verarbeitung geändert. Es wurde nichts ersetzt.",
         "expired": "Die Auswahlbearbeitung ist abgelaufen. Wähle den Text erneut aus und versuche es noch einmal.",

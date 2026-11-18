@@ -1061,6 +1061,8 @@
         "descriptionClipboardFailed": "Un tasto modificatore (come Ctrl o Maiusc) era ancora premuto: il testo non è stato incollato e non è stato possibile copiarlo negli appunti."
       },
       "selectionEditing": {
+        "selectText": "Seleziona un testo modificabile prima di usare la modifica vocale.",
+        "editInstruction": "Di' come vuoi riscrivere il testo selezionato.",
         "notAppliedTitle": "Modifica della selezione non applicata",
         "changed": "Il testo selezionato o l’app di destinazione è cambiato durante l’elaborazione. Non è stato sostituito nulla.",
         "expired": "La modifica è scaduta. Seleziona di nuovo il testo e riprova.",

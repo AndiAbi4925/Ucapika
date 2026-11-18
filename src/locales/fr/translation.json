@@ -1061,6 +1061,8 @@
         "descriptionClipboardFailed": "Une touche de modification (comme Ctrl ou Maj) était encore enfoncée : le texte n'a pas été collé et n'a pas pu être copié dans le presse-papiers non plus."
       },
       "selectionEditing": {
+        "selectText": "Sélectionnez du texte modifiable avant de le modifier à la voix.",
+        "editInstruction": "Dites comment reformuler le texte sélectionné.",
         "notAppliedTitle": "Modification de la sélection non appliquée",
         "changed": "Le texte sélectionné ou l’application cible a changé pendant le traitement. Rien n’a été remplacé.",
         "expired": "La modification a expiré. Sélectionnez de nouveau le texte et réessayez.",

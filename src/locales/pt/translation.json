@@ -1040,6 +1040,8 @@
         "descriptionClipboardFailed": "Uma tecla modificadora (como Ctrl ou Shift) ainda estava pressionada, por isso o texto não foi colado e também não foi possível copiá-lo para a área de transferência."
       },
       "selectionEditing": {
+        "selectText": "Selecione um texto editável antes de usar a edição por voz.",
+        "editInstruction": "Diga como quer reescrever o texto selecionado.",
         "notAppliedTitle": "Edição da seleção não aplicada",
         "changed": "O texto selecionado ou o aplicativo de destino mudou durante o processamento. Nada foi substituído.",
         "expired": "A edição expirou. Selecione o texto novamente e tente de novo.",
