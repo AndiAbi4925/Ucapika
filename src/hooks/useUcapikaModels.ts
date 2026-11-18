@@ -24,22 +24,30 @@ export function useUcapikaModels(speechModel: string) {
         setSpeech((state) => ({ ...state, progress: data.percentage ?? state.progress }));
       }
     });
-    void api.checkModelStatus(speechModel).then(
-      (result) => {
-        if (active) {
-          setSpeech((state) => ({
-            ...state,
-            ready: result.downloaded,
-            progress: result.isDownloading ? (result.downloadProgress ?? 0) : state.progress,
-          }));
+    const refresh = () => {
+      void api.checkModelStatus(speechModel).then(
+        (result) => {
+          if (active) {
+            setSpeech((state) => {
+              if (result.downloaded) return { ...checking, ready: true };
+              return {
+                ...state,
+                ready: false,
+                progress: result.isDownloading ? (result.downloadProgress ?? 0) : state.progress,
+              };
+            });
+          }
+        },
+        () => {
+          if (active) setSpeech({ ...checking, error: "Could not check the speech model." });
         }
-      },
-      () => {
-        if (active) setSpeech({ ...checking, error: "Could not check the speech model." });
-      }
-    );
+      );
+    };
+    refresh();
+    window.addEventListener("focus", refresh);
     return () => {
       active = false;
+      window.removeEventListener("focus", refresh);
       stop();
     };
   }, [speechModel]);
@@ -53,16 +61,23 @@ export function useUcapikaModels(speechModel: string) {
         setText((state) => ({ ...state, progress: data.progress }));
       }
     });
-    void api.modelCheck(UCAPIKA_TEXT_MODEL).then(
-      (ready) => {
-        if (active) setText((state) => ({ ...state, ready }));
-      },
-      () => {
-        if (active) setText({ ...checking, error: "Could not check the writing model." });
-      }
-    );
+    const refresh = () => {
+      void api.modelCheck(UCAPIKA_TEXT_MODEL).then(
+        (ready) => {
+          if (active) {
+            setText((state) => (ready ? { ...checking, ready: true } : { ...state, ready: false }));
+          }
+        },
+        () => {
+          if (active) setText({ ...checking, error: "Could not check the writing model." });
+        }
+      );
+    };
+    refresh();
+    window.addEventListener("focus", refresh);
     return () => {
       active = false;
+      window.removeEventListener("focus", refresh);
       stop();
     };
   }, []);
