@@ -7,7 +7,7 @@ Ucapika is a local-first desktop dictation and voice-editing app built from Open
 1. Open the [installer workflow](https://github.com/AndiAbi4925/Ucapika/actions/workflows/ucapika-build.yml) and choose a successful run for the branch or tag you want.
 2. On macOS, download the artifact for your architecture, unzip it, open the DMG and drag Ucapika into Applications. Launch it from Applications. For a trusted, unnotarized build blocked by Gatekeeper, follow [Apple’s Open Anyway steps](https://support.apple.com/en-us/102445).
 3. On Windows x64, unzip the Windows artifact and run the NSIS installer. If SmartScreen flags your trusted unsigned build, choose **More info** and **Run anyway** when available. [Microsoft SmartScreen guide](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/smartscreen-reputation)
-4. At first launch, enable Microphone and, on macOS, Accessibility. Select a speech model and download it. Install the writing model to enable voice editing and model-based cleanup. Click **Finish setup**.
+4. At first launch, enable Microphone and, on macOS, Accessibility. On macOS versions that show **Device Control and Data Access**, find Ucapika there under **Privacy & Security**. Select a speech model and download it. Install the writing model to enable voice editing and model-based cleanup. Click **Finish setup**.
 
 ## Shortcuts
 
@@ -47,6 +47,7 @@ The macOS build is ad-hoc signed by default. The Windows installer is unsigned b
 - **Qwen3.5 2B Q4_K_M**, about 1.4 GB, handles text cleanup and selection edits via llama.cpp. It is sized for the M4 Mac’s 16 GB of unified memory. Model files download separately from the app.
 - Settings and history live in Electron’s user-data directory. On macOS that is `~/Library/Application Support/Ucapika` and `~/Library/Application Support/Ucapika-development` for dev mode. On Windows it is `%APPDATA%\Ucapika`. The inherited local model cache is `~/.cache/openwhispr` or `%USERPROFILE%\.cache\openwhispr`.
 - New profiles keep transcript history locally and set audio retention to zero. OpenWhispr’s marketing and product-event collectors are disabled by default. Built-in speech and writing model routing is local.
+- **Cloud speech fallback** in Settings is opt-in. With your own OpenAI key, Ucapika can retry a failed local transcription with OpenAI. Writing assistance continues to use the downloaded local model.
 
 ## Attribution
 

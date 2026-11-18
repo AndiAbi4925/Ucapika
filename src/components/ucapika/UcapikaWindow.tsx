@@ -6,9 +6,12 @@ import { useControlPanelWindowDrag } from "../../hooks/useControlPanelWindowDrag
 import { useUcapikaMicrophone } from "../../hooks/useUcapikaMicrophone";
 import { useUcapikaModels } from "../../hooks/useUcapikaModels";
 import { useSettingsStore } from "../../stores/settingsStore";
+import { usePolicyStore } from "../../stores/policyStore";
+import { isTranscriptionSelectionAllowed } from "../../stores/policyRules";
 import type { TranscriptionItem } from "../../types/electron";
 import { getPlatform } from "../../utils/platform";
 import { isGlobeLikeHotkey } from "../../utils/hotkeys";
+import ApiKeyInput from "../ui/ApiKeyInput";
 import { HotkeyInput } from "../ui/HotkeyInput";
 import "./ucapika.css";
 
@@ -80,6 +83,52 @@ function ModelDownload({
   );
 }
 
+function SpeechFallbackSettings() {
+  const enabled = useSettingsStore((state) => state.allowOpenAIFallback);
+  const key = useSettingsStore((state) => state.openaiApiKey);
+  const allowed = usePolicyStore((state) =>
+    isTranscriptionSelectionAllowed(state, { mode: "providers", provider: "openai" })
+  );
+
+  function saveKey(value: string) {
+    const settings = useSettingsStore.getState();
+    if (!value) settings.setAllowOpenAIFallback(false);
+    settings.setOpenaiApiKey(value);
+  }
+
+  function toggleFallback() {
+    const settings = useSettingsStore.getState();
+    if (enabled) {
+      settings.setAllowOpenAIFallback(false);
+    } else if (allowed && key) {
+      settings.setCloudTranscriptionProvider("openai");
+      settings.setCloudTranscriptionModel("gpt-4o-mini-transcribe");
+      settings.setCloudTranscriptionMode("byok");
+      settings.setAllowOpenAIFallback(true);
+    }
+  }
+
+  return (
+    <Card
+      title="Cloud speech fallback"
+      detail="When enabled, a failed on-device transcription can send that recording to OpenAI using your API key."
+    >
+      {allowed && <ApiKeyInput apiKey={key} setApiKey={saveKey} label="OpenAI API key" />}
+      <button
+        className="uc-button"
+        type="button"
+        role="switch"
+        aria-checked={enabled}
+        disabled={!enabled && (!allowed || !key)}
+        onClick={toggleFallback}
+      >
+        Cloud fallback {enabled ? "on" : "off"}
+      </button>
+      {!allowed && <p>Cloud transcription is unavailable under this device’s policy.</p>}
+    </Card>
+  );
+}
+
 export function UcapikaWindow() {
   useControlPanelWindowDrag(true);
   const api = window.electronAPI;
@@ -98,6 +147,7 @@ export function UcapikaWindow() {
   const language = useSettingsStore((state) => state.preferredLanguage);
   const selectedMic = useSettingsStore((state) => state.selectedMicDeviceId);
   const cleanupEnabled = useSettingsStore((state) => state.useCleanupModel);
+  const cloudFallbackEnabled = useSettingsStore((state) => state.allowOpenAIFallback);
   const toneEnabled = useSettingsStore((state) => state.toneStyleEnabled);
   const tone = useSettingsStore((state) => state.toneStyles.other);
   const models = useUcapikaModels(model);
@@ -307,7 +357,7 @@ export function UcapikaWindow() {
           ))}
         </nav>
         <span className="uc-local">
-          <span /> On-device processing
+          <span /> {cloudFallbackEnabled ? "Local with cloud fallback" : "On-device processing"}
         </span>
       </aside>
       <div className="uc-canvas">
@@ -468,6 +518,7 @@ export function UcapikaWindow() {
               </Card>
             </div>
             {modelCards}
+            <SpeechFallbackSettings />
             <Card title="Cleanup style" detail="Applies when the writing model is enabled.">
               <label className="uc-field">
                 Tone
