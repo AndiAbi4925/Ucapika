@@ -5,6 +5,7 @@
     "windowsTrayIdentity": true
   },
   "productName": "Ucapika",
+  "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
   "protocols": {
     "name": "Ucapika Protocol",
     "schemes": ["ucapika"]
@@ -100,7 +101,6 @@
     "src/workers/**/*"
   ],
   "extraResources": [
-    ".env",
     {
       "from": "src/assets",
       "to": "src/assets",
@@ -139,6 +139,7 @@
         "all-MiniLM-L6-v2/**/*",
         "diarization-models/**/*",
         "whisper-vad/**/*",
+        "ffmpeg-source/**/*",
         "*.dylib",
         "*.dll",
         "*.so*"
@@ -161,12 +162,11 @@
     "hardenedRuntime": true,
     "entitlements": "resources/mac/entitlements.mac.plist",
     "entitlementsInherit": "resources/mac/entitlements.mac.plist",
-    "identity": "Gizmo Labs Inc. (T832773L2J)",
-    "notarize": true,
     "extendInfo": {
       "LSUIElement": false,
       "NSMicrophoneUsageDescription": "Ucapika uses the microphone to capture your voice for transcription.",
       "NSAudioCaptureUsageDescription": "Ucapika uses system audio to capture other participants' audio from calls and meetings.",
+      "NSAppleEventsUsageDescription": "Ucapika uses Apple Events for text insertion when required by the focused application.",
       "NSAccessibilityUsageDescription": "Ucapika needs accessibility permissions to paste transcribed text into other applications.",
       "NSCalendarsUsageDescription": "Ucapika reads your calendar to detect upcoming meetings and link meeting notes to events.",
       "NSCalendarsFullAccessUsageDescription": "Ucapika reads your calendar to detect upcoming meetings and link meeting notes to events."
@@ -174,20 +174,7 @@
   },
   "win": {
     "target": ["nsis"],
-    "icon": "src/assets/icon.ico",
-    "forceCodeSigning": true,
-    "azureSignOptions": {
-      "endpoint": "https://eus.codesigning.azure.net/",
-      "certificateProfileName": "openwhispr-release",
-      "codeSigningAccountName": "OpenWhispr",
-      "publisherName": "CN=Gizmo Labs Inc., O=Gizmo Labs Inc., L=Wilmington, S=Delaware, C=US"
-    },
-    "extraResources": [
-      {
-        "from": "resources/bin/nircmd.exe",
-        "to": "bin/nircmd.exe"
-      }
-    ]
+    "icon": "src/assets/icon.ico"
   },
   "linux": {
     "target": ["AppImage", "deb", "rpm", "tar.gz"],

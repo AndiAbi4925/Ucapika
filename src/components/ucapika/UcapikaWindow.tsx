@@ -102,6 +102,7 @@ export function UcapikaWindow() {
   const tone = useSettingsStore((state) => state.toneStyles.other);
   const models = useUcapikaModels(model);
   const mic = useUcapikaMicrophone(selectedMic);
+  const setTesting = mic.setTesting;
   const dictationLabel =
     isMac && (!dictationKey || isGlobeLikeHotkey(dictationKey))
       ? "Fn × 2"
@@ -168,8 +169,8 @@ export function UcapikaWindow() {
   }, [accessAllowed, api, configured]);
 
   useEffect(() => {
-    mic.setTesting(false);
-  }, [section, mic.setTesting]);
+    setTesting(false);
+  }, [section, setTesting]);
 
   async function requestMicrophone() {
     setPermissionError("");
@@ -532,6 +533,12 @@ export function UcapikaWindow() {
                     "https://huggingface.co/Qwen/Qwen3.5-2B/blob/main/LICENSE",
                   ],
                   ["llama.cpp", "MIT", "https://github.com/ggml-org/llama.cpp/blob/master/LICENSE"],
+                  ["FFmpeg", "LGPL 2.1 or later", "https://ffmpeg.org/legal.html"],
+                  [
+                    "Silero VAD",
+                    "MIT",
+                    "https://github.com/snakers4/silero-vad/blob/master/LICENSE",
+                  ],
                   ["Electron", "MIT", "https://github.com/electron/electron/blob/main/LICENSE"],
                   [
                     "Inter and Instrument Serif",

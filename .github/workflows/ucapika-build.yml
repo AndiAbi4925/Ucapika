@@ -1,0 +1,70 @@
+name: Ucapika installers
+
+on:
+  push:
+    branches: [main, ucapika/main-build]
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  installers:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            platform: mac
+            arch: arm64
+            artifact: "*.dmg"
+          - runner: macos-15-intel
+            platform: mac
+            arch: x64
+            artifact: "*.dmg"
+          - runner: windows-2025
+            platform: win
+            arch: x64
+            artifact: "*.exe"
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - if: matrix.platform == 'win'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+      - if: matrix.platform == 'win'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          install: curl make tar mingw-w64-ucrt-x86_64-gcc
+      - run: npm ci
+      - name: Build the audio converter on macOS
+        if: matrix.platform == 'mac'
+        run: bash scripts/build-ucapika-ffmpeg.sh
+      - name: Build the audio converter on Windows
+        if: matrix.platform == 'win'
+        shell: msys2 {0}
+        run: bash scripts/build-ucapika-ffmpeg.sh
+      - name: Package installer
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CSC_LINK: ${{ matrix.platform == 'mac' && secrets.MAC_CSC_LINK || '' }}
+          CSC_KEY_PASSWORD: ${{ matrix.platform == 'mac' && secrets.MAC_CSC_KEY_PASSWORD || '' }}
+          APPLE_ID: ${{ matrix.platform == 'mac' && secrets.APPLE_ID || '' }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ matrix.platform == 'mac' && secrets.APPLE_APP_SPECIFIC_PASSWORD || '' }}
+          APPLE_TEAM_ID: ${{ matrix.platform == 'mac' && secrets.APPLE_TEAM_ID || '' }}
+          WIN_CSC_LINK: ${{ matrix.platform == 'win' && secrets.WIN_CSC_LINK || '' }}
+          WIN_CSC_KEY_PASSWORD: ${{ matrix.platform == 'win' && secrets.WIN_CSC_KEY_PASSWORD || '' }}
+        run: npm run build:${{ matrix.platform }}
+      - uses: actions/upload-artifact@v7
+        with:
+          name: Ucapika-${{ matrix.platform }}-${{ matrix.arch }}
+          path: dist/${{ matrix.artifact }}
+          if-no-files-found: error
