@@ -1,3 +1,9 @@
+# Ucapika
+
+Local-first desktop dictation and voice editing. See the [Ucapika setup and build guide](UCAPIKA.md) for installers, shortcuts, and licensing.
+
+---
+
 <p align="center">
   <img src="src/assets/logo.svg" alt="OpenWhispr" width="120" />
 </p>
