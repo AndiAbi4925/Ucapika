@@ -8328,78 +8328,82 @@ class IPCHandlers {
       tokenStore,
       logger: debugLogger,
     });
-    const backgroundCloudApiRequest = createCloudApiRequestHandler({
-      getApiUrl,
-      getAppVersion: () => app.getVersion(),
-      tokenStore,
-      proxyFetch: (url, init) => proxyFetch(url, { ...init, signal: AbortSignal.timeout(10_000) }),
-    });
-    // Collectors have no renderer IPC operation to own their policy checks or
-    // cancellation, but their uploads follow the same backup rules as sync.
-    const requestBackgroundCloudApi = createProductHandler(
-      "cloud-api-request",
-      (_event, opts) => backgroundCloudApiRequest(opts),
-      true
-    );
-    const handleBackgroundCloudApiRequest = async (opts) => {
-      const origin = this.effectivePolicyManager.getCurrent();
-      const result = await requestBackgroundCloudApi(undefined, opts);
-      if (result?.code !== "DEVICE_POLICY_BLOCKED") return result;
-      const current = this.effectivePolicyManager.getCurrent();
-      // A settled backup denial has the API's discard semantics. Loading or a
-      // replacement identity only delays the original account's pending facts.
-      if (
-        current.success &&
-        current.policy?.dataRetention.cloudBackupAllowed === false &&
-        current.accountId === origin.accountId &&
-        current.authGeneration === opts.expectedAuthGeneration &&
-        origin.authGeneration === opts.expectedAuthGeneration
-      ) {
-        return { ...result, status: 403, code: "POLICY_CLOUD_BACKUP_BLOCKED" };
-      }
-      return result;
-    };
-    try {
-      const ActivationDatabase = require("better-sqlite3");
-      const activationDb = new ActivationDatabase(
-        path.join(app.getPath("userData"), "meta-activation.db")
-      );
-      activationDb.pragma("foreign_keys = ON");
-      this.metaActivation = new MetaActivation({
-        db: activationDb,
-        getScope: () =>
-          accountScopeBinding.resolveActiveAccountScope({
-            ...tokenStore.getState(),
-            binding: accountScopeBinding.read(),
-          }),
-        request: handleBackgroundCloudApiRequest,
-        logger: debugLogger,
-      });
-      this.metaActivation.start();
-      // A machine that slept through the hourly re-sync takes server time
-      // again on wake, before its next batch.
-      powerMonitor.on("resume", () => void this.metaActivation?.resync());
-    } catch {
-      // Marketing bookkeeping must never prevent ordinary dictation/startup.
-      debugLogger.warn("Activation storage unavailable");
-    }
-    // Dashboard funnel milestones (app sign-in, onboarding completion). Like
-    // activation, it must never stand in the way of dictation or startup.
-    try {
-      this.productEvents = new ProductEvents({
-        store: createProductEventsStore(productEventsFile()),
-        getScope: () =>
-          accountScopeBinding.resolveActiveAccountScope({
-            ...tokenStore.getState(),
-            binding: accountScopeBinding.read(),
-          }),
-        request: handleBackgroundCloudApiRequest,
+    // Ucapika starts with upstream telemetry disabled.
+    if (process.env.UCAPIKA_ENABLE_TELEMETRY === "1") {
+      const backgroundCloudApiRequest = createCloudApiRequestHandler({
+        getApiUrl,
         getAppVersion: () => app.getVersion(),
-        logger: debugLogger,
+        tokenStore,
+        proxyFetch: (url, init) =>
+          proxyFetch(url, { ...init, signal: AbortSignal.timeout(10_000) }),
       });
-      void this.productEvents.flush();
-    } catch {
-      debugLogger.warn("Product events storage unavailable");
+      // Collectors have no renderer IPC operation to own their policy checks or
+      // cancellation, but their uploads follow the same backup rules as sync.
+      const requestBackgroundCloudApi = createProductHandler(
+        "cloud-api-request",
+        (_event, opts) => backgroundCloudApiRequest(opts),
+        true
+      );
+      const handleBackgroundCloudApiRequest = async (opts) => {
+        const origin = this.effectivePolicyManager.getCurrent();
+        const result = await requestBackgroundCloudApi(undefined, opts);
+        if (result?.code !== "DEVICE_POLICY_BLOCKED") return result;
+        const current = this.effectivePolicyManager.getCurrent();
+        // A settled backup denial has the API's discard semantics. Loading or a
+        // replacement identity only delays the original account's pending facts.
+        if (
+          current.success &&
+          current.policy?.dataRetention.cloudBackupAllowed === false &&
+          current.accountId === origin.accountId &&
+          current.authGeneration === opts.expectedAuthGeneration &&
+          origin.authGeneration === opts.expectedAuthGeneration
+        ) {
+          return { ...result, status: 403, code: "POLICY_CLOUD_BACKUP_BLOCKED" };
+        }
+        return result;
+      };
+      try {
+        const ActivationDatabase = require("better-sqlite3");
+        const activationDb = new ActivationDatabase(
+          path.join(app.getPath("userData"), "meta-activation.db")
+        );
+        activationDb.pragma("foreign_keys = ON");
+        this.metaActivation = new MetaActivation({
+          db: activationDb,
+          getScope: () =>
+            accountScopeBinding.resolveActiveAccountScope({
+              ...tokenStore.getState(),
+              binding: accountScopeBinding.read(),
+            }),
+          request: handleBackgroundCloudApiRequest,
+          logger: debugLogger,
+        });
+        this.metaActivation.start();
+        // A machine that slept through the hourly re-sync takes server time
+        // again on wake, before its next batch.
+        powerMonitor.on("resume", () => void this.metaActivation?.resync());
+      } catch {
+        // Marketing bookkeeping must never prevent ordinary dictation/startup.
+        debugLogger.warn("Activation storage unavailable");
+      }
+      // Dashboard funnel milestones (app sign-in, onboarding completion). Like
+      // activation, it must never stand in the way of dictation or startup.
+      try {
+        this.productEvents = new ProductEvents({
+          store: createProductEventsStore(productEventsFile()),
+          getScope: () =>
+            accountScopeBinding.resolveActiveAccountScope({
+              ...tokenStore.getState(),
+              binding: accountScopeBinding.read(),
+            }),
+          request: handleBackgroundCloudApiRequest,
+          getAppVersion: () => app.getVersion(),
+          logger: debugLogger,
+        });
+        void this.productEvents.flush();
+      } catch {
+        debugLogger.warn("Product events storage unavailable");
+      }
     }
     ipcMain.handle("product-events-record-app-session", (_event, context) =>
       this.productEvents?.recordAppSession(context)
