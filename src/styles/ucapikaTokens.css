@@ -1,0 +1,39 @@
+:root {
+  /* === Surfaces & Backgrounds === */
+  --bg-shell: #F3EFEA;             /* Outer app frame / sidebar canvas (Warm Alabaster) */
+  --bg-canvas: #FCFBF9;            /* Main inset content sheet (Warm Ivory) */
+  --bg-surface-subtle: #F7F4EF;    /* Bento cards, nested containers, modal sidebar (Warm Stone) */
+  --bg-surface-hover: #EFECE6;     /* Subtle row hover fill */
+  --bg-surface-active: #EBE5DC;    /* Active sidebar nav item & selected row fill (Warm Oat) */
+  --bg-surface-pure: #FFFFFF;      /* High-contrast pills on dark banners & modal sheet */
+
+  /* === Borders & Hairlines === */
+  --border-primary: #E5DFD5;       /* Main card & inset container 1px border */
+  --border-subtle: #ECE7DF;        /* Internal list dividers & horizontal rules */
+  --border-strong: #D5CEC2;        /* Keycaps, input outlines, progress tracks */
+  --border-accent-amber: #F39C38;  /* Highlighted callout / active tour card stroke */
+
+  /* === Typography & Ink === */
+  --text-primary: #1C1B19;         /* Primary headings, active tabs, core body copy */
+  --text-secondary: #6B665E;       /* Descriptions, inactive tabs, subtitles */
+  --text-muted: #8E887E;           /* Timestamps, metadata, uppercase kickers */
+  --text-inverse: #FFFFFF;         /* Text over dark buttons & blurred photo banners */
+  --text-inverse-muted: rgba(255, 255, 255, 0.82);
+
+  /* === Brand & Semantic Accents === */
+  --accent-obsidian: #1A1918;      /* Primary dark action buttons ("Start", "Create New", "Add new") */
+  --accent-obsidian-hover: #2F2D2A;
+  --accent-amber: #F59B32;         /* Warm high-priority CTA ("Upgrade to Pro", "Create report") */
+  --accent-amber-hover: #E68A20;
+  --accent-amber-border: #D9821E;
+  --accent-peach-tint: #F6E8D5;    /* Soft secondary pill button fill */
+
+  /* === Data Visualization & Status === */
+  --viz-teal-deep: #185A58;        /* Primary chart bar, active gauge arc, progress fill */
+  --viz-teal-mid: #439A91;         /* Secondary chart bar, medium streak */
+  --viz-mint-soft: #BFEAE3;        /* Completed checklist circle, light streak */
+  --viz-empty: #E8E3DB;            /* Inactive heatmap cell & empty progress track */
+  --status-info-bar: #0EA5E9;      /* 3px vertical indicator pill for calendar events */
+  --badge-lavender-bg: #F3E8FF;    /* Soft "Beta" tag background */
+  --badge-lavender-text: #7E22CE;  /* Soft "Beta" tag text */
+}

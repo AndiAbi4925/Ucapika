@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./styles/ucapikaTokens.css";
 /* Dictation window feature styles (voice pill, live transcript panel). */
 @import "./styles/dictation-panel.css";
 /* The assistant's own window (pill, composer, modal). */

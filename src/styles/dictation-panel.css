@@ -475,3 +475,20 @@
     -webkit-text-fill-color: currentColor;
   }
 }
+
+.voice-pill-control[data-ucapika-state="recording"]:not([data-liquid-fused]),
+.voice-pill-control[data-ucapika-state="processing"]:not([data-liquid-fused]) {
+  background: var(--accent-obsidian);
+  border-color: var(--accent-obsidian-hover);
+  color: var(--text-inverse);
+}
+
+.liquid-cancel-skin[data-pill-state="recording"] path,
+.liquid-cancel-skin[data-pill-state="processing"] path {
+  fill: var(--accent-obsidian);
+  stroke: var(--accent-obsidian-hover);
+}
+
+.voice-pill-control[data-ucapika-state="recording"] .voice-pill-waveform {
+  color: var(--accent-amber);
+}

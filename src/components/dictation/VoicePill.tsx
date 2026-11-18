@@ -120,6 +120,7 @@ export const VoicePill = forwardRef<HTMLDivElement, VoicePillProps>(function Voi
         transition: `width ${VOICE_PILL_GROW_TRANSITION}, height ${VOICE_PILL_GROW_TRANSITION}, padding-left ${VOICE_PILL_GROW_TRANSITION}, padding-right ${VOICE_PILL_GROW_TRANSITION}, background-color 220ms ease-out, border-color 220ms ease-out, box-shadow 220ms ease-out`,
         ...style,
       }}
+      data-ucapika-state={state}
       data-horizontal-direction={horizontalDirection}
       data-integrated-with-panel={integratedWithPanel || undefined}
       data-liquid-fused={liquidFused || undefined}

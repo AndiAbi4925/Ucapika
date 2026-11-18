@@ -31,6 +31,11 @@ const isOnboardingInProgress = () =>
 
 const ControlPanel = React.lazy(() => import("./components/ControlPanel.tsx"));
 const OnboardingFlow = React.lazy(() => import("./components/OnboardingFlow.tsx"));
+const UcapikaWindow = React.lazy(() =>
+  import("./components/ucapika/UcapikaWindow.tsx").then(({ UcapikaWindow }) => ({
+    default: UcapikaWindow,
+  }))
+);
 const AgentWindow = React.lazy(() => import("./components/agent/AgentWindow.tsx"));
 
 export default function AppRouter() {
@@ -41,6 +46,7 @@ export default function AppRouter() {
   const policyStatus = usePolicyStore((state) => state.status);
   const localOnly = usePolicyStore((state) => state.localOnly);
   const workspaceRequired = usePolicyStore((state) => state.workspaceRequired);
+  const requireSignIn = usePolicyStore((state) => state.requireSignIn);
   useEffect(() => {
     void usePolicyStore.getState().bootstrap();
   }, []);
@@ -86,6 +92,16 @@ export default function AppRouter() {
       <Suspense fallback={null}>
         <AgentWindow />
       </Suspense>
+    );
+  }
+
+  if (!requireSignIn && !workspaceRequired) {
+    return isControlPanelWindow() ? (
+      <Suspense fallback={<LoadingFallback />}>
+        <UcapikaWindow />
+      </Suspense>
+    ) : (
+      <App />
     );
   }
 
