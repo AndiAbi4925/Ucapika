@@ -169,7 +169,16 @@ test.before(() => {
   const Ctor = IPCHandlers.default || IPCHandlers;
   ipcPrototype = Ctor.prototype;
   fakeThis = buildFakeThis();
-  Ctor.prototype.setupHandlers.call(withDevicePolicy(fakeThis));
+  // This harness exercises the background collectors with mocked transports.
+  // Shipping profiles still require an explicit opt-in to start collectors.
+  const telemetry = process.env.UCAPIKA_ENABLE_TELEMETRY;
+  process.env.UCAPIKA_ENABLE_TELEMETRY = "1";
+  try {
+    Ctor.prototype.setupHandlers.call(withDevicePolicy(fakeThis));
+  } finally {
+    if (telemetry === undefined) delete process.env.UCAPIKA_ENABLE_TELEMETRY;
+    else process.env.UCAPIKA_ENABLE_TELEMETRY = telemetry;
+  }
   handleAuthTokenChange = (state) => {
     tokenState = { ...state };
     return Ctor.prototype._handleAuthTokenChange.call(fakeThis, state);
