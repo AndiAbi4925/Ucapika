@@ -1,3 +1,4 @@
+import "./config/ucapikaPreferences";
 import "./models/registryBootstrap.js";
 import React from "react";
 import ReactDOM from "react-dom/client";

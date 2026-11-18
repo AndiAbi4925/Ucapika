@@ -7,7 +7,6 @@ import { RETIRED_TINFOIL_MODEL_NAMES } from "../config/retiredCloudModelPolicy.j
 import { create } from "zustand";
 import { GENERATE_NOTES_KEY } from "../helpers/builtinActions";
 import { API_ENDPOINTS } from "../config/constants";
-import { UCAPIKA_SPEECH_MODEL, UCAPIKA_TEXT_MODEL } from "../config/ucapikaModels";
 import i18n, { normalizeUiLanguage } from "../i18n";
 import { readStoredAccountScopeUserId } from "../lib/authAccountScope";
 import { ensureAgentNameInDictionary } from "../utils/agentName";
@@ -1793,8 +1792,8 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   uiLanguage: normalizeUiLanguage(
     isBrowser ? localStorage.getItem("uiLanguage") || i18n.language : null
   ),
-  useLocalWhisper: readBoolean("useLocalWhisper", true),
-  whisperModel: readString("whisperModel", UCAPIKA_SPEECH_MODEL),
+  useLocalWhisper: readBoolean("useLocalWhisper", false),
+  whisperModel: readString("whisperModel", "base"),
   localTranscriptionProvider: readLocalProvider("localTranscriptionProvider"),
   parakeetModel: readString("parakeetModel", ""),
   cohereModel: readString("cohereModel", DEFAULT_COHERE_MODEL),
@@ -1836,10 +1835,10 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   assemblyAiStreaming: readBoolean("assemblyAiStreaming", true),
 
   autoGenerateNoteTitle: readBoolean("autoGenerateNoteTitle", true),
-  useCleanupModel: readBoolean("useCleanupModel", false),
+  useCleanupModel: readBoolean("useCleanupModel", true),
   useDictationAgent: readBoolean("useDictationAgent", true),
-  cleanupModel: readString("cleanupModel", UCAPIKA_TEXT_MODEL),
-  cleanupProvider: readString("cleanupProvider", "qwen"),
+  cleanupModel: readString("cleanupModel", ""),
+  cleanupProvider: readString("cleanupProvider", "openai"),
 
   // Secrets hydrate from main process in initializeSettings, never from localStorage.
   openaiApiKey: "",
@@ -1923,7 +1922,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   saveDiscardedTranscriptions: readBoolean("saveDiscardedTranscriptions", false),
   audioCuesEnabled: readBoolean("audioCuesEnabled", true),
   pauseMediaOnDictation: readBoolean("pauseMediaOnDictation", false),
-  floatingIconAutoHide: readBoolean("floatingIconAutoHide", true),
+  floatingIconAutoHide: readBoolean("floatingIconAutoHide", false),
   startMinimized: readBoolean("startMinimized", false),
   notificationsEnabled: readBoolean("notificationsEnabled", true),
   notifyMeetingDetection: readBoolean("notifyMeetingDetection", true),
@@ -2000,9 +1999,9 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   isSignedIn: readBoolean("isSignedIn", false),
 
   transcriptionMode: (() => {
-    const v = readString("transcriptionMode", "local");
+    const v = readString("transcriptionMode", "openwhispr");
     if (v === "openwhispr" || v === "providers" || v === "local" || v === "self-hosted") return v;
-    return "local" as InferenceMode;
+    return "openwhispr" as InferenceMode;
   })(),
   remoteTranscriptionType: (() => {
     const v = readString("remoteTranscriptionType", "lan");
@@ -2012,7 +2011,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   remoteTranscriptionModel: readString("remoteTranscriptionModel", ""),
   selfHostedSttHeaders: { dictation: [], upload: [] },
   cleanupMode: (() => {
-    const v = readString("cleanupMode", "local");
+    const v = readString("cleanupMode", "openwhispr");
     if (
       v === "openwhispr" ||
       v === "providers" ||
@@ -2021,7 +2020,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
       v === "enterprise"
     )
       return v;
-    return "local" as InferenceMode;
+    return "openwhispr" as InferenceMode;
   })(),
   cleanupRemoteUrl: readString("cleanupRemoteUrl", ""),
   keepLocalModelLoaded: readBoolean("keepLocalModelLoaded", false),
@@ -2221,7 +2220,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   chatAgentCustomApiKey: readString("chatAgentCustomApiKey", ""),
 
   dictationAgentMode: (() => {
-    const v = readString("dictationAgentMode", "local");
+    const v = readString("dictationAgentMode", "openwhispr");
     if (
       v === "openwhispr" ||
       v === "providers" ||
@@ -2230,10 +2229,10 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
       v === "enterprise"
     )
       return v;
-    return "local" as InferenceMode;
+    return "openwhispr" as InferenceMode;
   })(),
-  dictationAgentProvider: readString("dictationAgentProvider", "qwen"),
-  dictationAgentModel: readString("dictationAgentModel", UCAPIKA_TEXT_MODEL),
+  dictationAgentProvider: readString("dictationAgentProvider", ""),
+  dictationAgentModel: readString("dictationAgentModel", ""),
   dictationAgentCloudMode: readString("dictationAgentCloudMode", "openwhispr"),
   dictationAgentCloudBaseUrl: readString("dictationAgentCloudBaseUrl", ""),
   dictationAgentRemoteUrl: readString("dictationAgentRemoteUrl", ""),

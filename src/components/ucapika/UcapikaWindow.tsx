@@ -271,16 +271,17 @@ export function UcapikaWindow() {
       <Card title="Writing assistance" detail="Qwen3.5 2B Q4 · 1.4 GB for cleanup and voice edits.">
         <ModelDownload {...models.text} download={() => void models.downloadText()} />
         {models.text.ready && (
-          <label className="uc-check">
-            <input
-              type="checkbox"
-              checked={cleanupEnabled}
-              onChange={(event) =>
-                useSettingsStore.getState().setUseCleanupModel(event.target.checked)
-              }
-            />
-            Clean up dictation
-          </label>
+          <div className="uc-check">
+            <button
+              className="uc-button"
+              type="button"
+              role="switch"
+              aria-checked={cleanupEnabled}
+              onClick={() => useSettingsStore.getState().setUseCleanupModel(!cleanupEnabled)}
+            >
+              Clean up dictation {cleanupEnabled ? "on" : "off"}
+            </button>
+          </div>
         )}
       </Card>
     </div>
@@ -381,6 +382,7 @@ export function UcapikaWindow() {
                   type="button"
                   disabled={!models.speech.ready || !micAllowed || !accessAllowed}
                   onClick={() => {
+                    if (models.text.ready) useSettingsStore.getState().setUseCleanupModel(true);
                     localStorage.setItem(startKey, "true");
                     setConfigured(true);
                   }}
