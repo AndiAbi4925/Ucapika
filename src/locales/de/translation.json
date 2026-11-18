@@ -64,12 +64,12 @@
     },
     "openControlPanel": "Kontrollzentrum öffnen",
     "hideControlPanel": "Kontrollzentrum ausblenden",
-    "quit": "OpenWhispr beenden",
-    "tooltip": "OpenWhispr – Sprachdiktat"
+    "quit": "Ucapika beenden",
+    "tooltip": "Ucapika – Sprachdiktat"
   },
   "menu": {
-    "appLabel": "OpenWhispr",
-    "quit": "OpenWhispr beenden",
+    "appLabel": "Ucapika",
+    "quit": "Ucapika beenden",
     "speech": "Sprache",
     "settings": "Einstellungen …",
     "help": "Hilfe",

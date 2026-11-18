@@ -1,7 +1,8 @@
 {
-  "name": "open-whispr",
-  "version": "1.12.0",
-  "description": "A desktop dictation application using whisper.cpp for speech-to-text transcription",
+  "name": "ucapika",
+  "productName": "Ucapika",
+  "version": "0.1.0",
+  "description": "Local-first desktop dictation and voice editing",
   "main": "main.js",
   "private": true,
   "engines": {

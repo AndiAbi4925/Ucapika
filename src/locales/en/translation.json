@@ -64,12 +64,12 @@
     },
     "openControlPanel": "Open Control Panel",
     "hideControlPanel": "Hide Control Panel",
-    "quit": "Quit OpenWhispr",
-    "tooltip": "OpenWhispr - Voice Dictation"
+    "quit": "Quit Ucapika",
+    "tooltip": "Ucapika - Voice Dictation"
   },
   "menu": {
-    "appLabel": "OpenWhispr",
-    "quit": "Quit OpenWhispr",
+    "appLabel": "Ucapika",
+    "quit": "Quit Ucapika",
     "speech": "Speech",
     "settings": "Settings...",
     "help": "Help",

@@ -45,11 +45,12 @@ try {
 
 const VALID_CHANNELS = new Set(["development", "staging", "production"]);
 const DEFAULT_OAUTH_PROTOCOL_BY_CHANNEL = {
-  development: "openwhispr-dev",
-  staging: "openwhispr-staging",
-  production: "openwhispr",
+  development: "ucapika-dev",
+  staging: "ucapika-staging",
+  production: "ucapika",
 };
-const BASE_WINDOWS_APP_ID = "com.gizmolabs.openwhispr";
+const BASE_WINDOWS_APP_ID = "com.andiabi4925.ucapika";
+app.setName("Ucapika");
 const DEFAULT_AUTH_BRIDGE_PORT = 5199;
 
 function isElectronBinaryExec() {
@@ -88,7 +89,7 @@ function configureChannelUserDataPath() {
     return;
   }
 
-  const isolatedPath = path.join(app.getPath("appData"), `OpenWhispr-${APP_CHANNEL}`);
+  const isolatedPath = path.join(app.getPath("appData"), `Ucapika-${APP_CHANNEL}`);
   app.setPath("userData", isolatedPath);
 }
 
@@ -268,11 +269,6 @@ if (!gotSingleInstanceLock) {
 }
 
 const isLiveWindow = (window) => window && !window.isDestroyed();
-
-// Ensure macOS menus use the proper casing for the app name
-if (process.platform === "darwin" && app.getName() !== "OpenWhispr") {
-  app.setName("OpenWhispr");
-}
 
 // Add global error handling for uncaught exceptions
 process.on("uncaughtException", (error) => {

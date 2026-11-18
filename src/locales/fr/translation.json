@@ -64,12 +64,12 @@
     },
     "openControlPanel": "Ouvrir le panneau de contrôle",
     "hideControlPanel": "Masquer le panneau de contrôle",
-    "quit": "Quitter OpenWhispr",
-    "tooltip": "OpenWhispr - Dictée vocale"
+    "quit": "Quitter Ucapika",
+    "tooltip": "Ucapika - Dictée vocale"
   },
   "menu": {
-    "appLabel": "OpenWhispr",
-    "quit": "Quitter OpenWhispr",
+    "appLabel": "Ucapika",
+    "quit": "Quitter Ucapika",
     "speech": "Parole",
     "settings": "Réglages…",
     "help": "Aide",

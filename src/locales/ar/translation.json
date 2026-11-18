@@ -6027,12 +6027,12 @@
     },
     "openControlPanel": "فتح لوحة التحكم",
     "hideControlPanel": "إخفاء لوحة التحكم",
-    "quit": "إنهاء OpenWhispr",
-    "tooltip": "OpenWhispr - الإملاء الصوتي"
+    "quit": "إنهاء Ucapika",
+    "tooltip": "Ucapika - الإملاء الصوتي"
   },
   "menu": {
-    "appLabel": "OpenWhispr",
-    "quit": "إنهاء OpenWhispr",
+    "appLabel": "Ucapika",
+    "quit": "إنهاء Ucapika",
     "speech": "النطق",
     "settings": "الإعدادات...",
     "help": "المساعدة",

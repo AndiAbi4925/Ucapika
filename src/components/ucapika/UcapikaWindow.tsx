@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { AudioLines, Check, ChevronRight, HelpCircle, Copy, Home, Settings } from "../icons";
+import { Check, ChevronRight, HelpCircle, Copy, Home, Settings } from "../icons";
 import { UCAPIKA_SPEECH_MODEL } from "../../config/ucapikaModels";
+import wordmark from "../../assets/ucapika-mark.svg";
 import { useControlPanelWindowDrag } from "../../hooks/useControlPanelWindowDrag";
 import { useUcapikaMicrophone } from "../../hooks/useUcapikaMicrophone";
 import { useUcapikaModels } from "../../hooks/useUcapikaModels";
@@ -286,7 +287,7 @@ export function UcapikaWindow() {
     <main className="uc-shell" data-platform={isMac ? "mac" : "other"}>
       <aside className="uc-sidebar">
         <div className="uc-wordmark">
-          <AudioLines size={21} aria-hidden="true" /> Ucapika
+          <img src={wordmark} alt="" width={28} height={28} /> Ucapika
         </div>
         <nav aria-label="Primary">
           {sections.map(({ label, Icon }) => (

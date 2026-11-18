@@ -64,12 +64,12 @@
     },
     "openControlPanel": "Открыть панель управления",
     "hideControlPanel": "Скрыть панель управления",
-    "quit": "Закрыть OpenWhispr",
-    "tooltip": "OpenWhispr — голосовая диктовка"
+    "quit": "Закрыть Ucapika",
+    "tooltip": "Ucapika — голосовая диктовка"
   },
   "menu": {
-    "appLabel": "OpenWhispr",
-    "quit": "Закрыть OpenWhispr",
+    "appLabel": "Ucapika",
+    "quit": "Закрыть Ucapika",
     "speech": "Речь",
     "settings": "Настройки…",
     "help": "Справка",
