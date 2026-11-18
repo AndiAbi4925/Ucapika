@@ -1107,7 +1107,7 @@ class WindowManager {
       this._sendDictationToggle("toggle-voice-agent", "assistant");
       return;
     }
-    this.agentWindow?.handleHotkey();
+    this.agentWindow?.handleHotkey({ selectionOnly: true });
   }
 
   sendToggleTranslation() {

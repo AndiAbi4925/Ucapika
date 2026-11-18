@@ -77,7 +77,7 @@ class AgentWindowManager {
   // The agent hotkey. The renderer decides what the press means (listen,
   // submit, switch from typing to voice); main captures what the user was
   // working in, before the window can take focus from it.
-  handleHotkey() {
+  handleHotkey({ selectionOnly = false } = {}) {
     const windowManager = this.windowManager;
     if (windowManager._onboardingActive || windowManager.hotkeyManager.isInListeningMode()) return;
     if (windowManager.isDictationActive()) return;
@@ -89,7 +89,7 @@ class AgentWindowManager {
       void windowManager.selectionManager?.captureTarget?.({ force: true });
     }
     void this._show(() => windowManager._resolveActiveDisplay(targetPidPromise));
-    this._send("agent-window-hotkey", { external });
+    this._send("agent-window-hotkey", { external, selectionOnly });
   }
 
   // The tray's and the pill menu's Ask assistant: no app was pressed in, so

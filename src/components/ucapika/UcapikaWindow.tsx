@@ -98,6 +98,8 @@ export function UcapikaWindow() {
   const language = useSettingsStore((state) => state.preferredLanguage);
   const selectedMic = useSettingsStore((state) => state.selectedMicDeviceId);
   const cleanupEnabled = useSettingsStore((state) => state.useCleanupModel);
+  const toneEnabled = useSettingsStore((state) => state.toneStyleEnabled);
+  const tone = useSettingsStore((state) => state.toneStyles.other);
   const models = useUcapikaModels(model);
   const mic = useUcapikaMicrophone(selectedMic);
   const dictationLabel =
@@ -328,7 +330,7 @@ export function UcapikaWindow() {
                   </Card>
                   <Card
                     title="Edit by voice"
-                    detail="Select text, use the shortcut, then say how to rewrite it."
+                    detail="Select text and speak your edit. Press the shortcut again to apply it. Undo in the writing app."
                   >
                     {editKey ? (
                       <kbd>{editKey}</kbd>
@@ -463,6 +465,26 @@ export function UcapikaWindow() {
               </Card>
             </div>
             {modelCards}
+            <Card title="Cleanup style" detail="Applies when the writing model is enabled.">
+              <label className="uc-field">
+                Tone
+                <select
+                  value={toneEnabled ? tone : "neutral"}
+                  onChange={(event) => {
+                    const state = useSettingsStore.getState();
+                    const next = event.target.value;
+                    state.setToneStyleEnabled(next !== "neutral");
+                    if (next === "formal" || next === "casual") {
+                      state.setToneStyles({ personal: next, work: next, email: next, other: next });
+                    }
+                  }}
+                >
+                  <option value="neutral">Neutral</option>
+                  <option value="formal">Formal</option>
+                  <option value="casual">Casual</option>
+                </select>
+              </label>
+            </Card>
             <Card title="Dictation language">
               <label className="uc-field">
                 Language

@@ -416,7 +416,9 @@ class EnvironmentManager {
       this.saveVoiceAgentKey(legacy);
       delete process.env.CHAT_AGENT_KEY;
     }
-    return legacy;
+    return (
+      legacy || (process.platform === "darwin" ? "Command+Alt+Shift+E" : "Control+Alt+Shift+E")
+    );
   }
 
   saveVoiceAgentKey(key) {
@@ -458,7 +460,7 @@ class EnvironmentManager {
   }
 
   getFloatingIconAutoHide() {
-    return this._getKey("FLOATING_ICON_AUTO_HIDE") === "true";
+    return this._getKey("FLOATING_ICON_AUTO_HIDE") !== "false";
   }
 
   saveFloatingIconAutoHide(enabled) {

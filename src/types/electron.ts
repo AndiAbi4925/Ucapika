@@ -1790,7 +1790,9 @@ declare global {
       openAgentWindow?: () => Promise<boolean>;
       submitAgentCommand?: (command: AgentWindowCommand) => Promise<boolean>;
       /** `external`: the press came from another app, whose selection may be captured. */
-      onAgentWindowHotkey?: (callback: (payload: { external: boolean }) => void) => () => void;
+      onAgentWindowHotkey?: (
+        callback: (payload: { external: boolean; selectionOnly?: boolean }) => void
+      ) => () => void;
       onAgentWindowOpen?: (
         callback: (payload: { layout: AgentWindowLayout }) => void
       ) => () => void;

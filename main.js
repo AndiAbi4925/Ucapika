@@ -1667,6 +1667,8 @@ async function startApp() {
 
   if (process.platform === "darwin") {
     const { isGlobeLikeHotkey, isMouseButtonHotkey } = require("./src/helpers/hotkeyManager");
+    const { createGlobeDoubleTap } = require("./src/helpers/globeDoubleTap");
+    const globeDoubleTap = createGlobeDoubleTap();
     let globeKeyDownTime = 0;
     let globeKeyIsRecording = false;
     let globeLastStopTime = 0;
@@ -1687,16 +1689,20 @@ async function startApp() {
         windowManager.controlPanelWindow.webContents.send("globe-key-pressed");
       }
 
+      if (hotkeyManager.isInListeningMode()) {
+        globeDoubleTap.reset();
+        return;
+      }
+
       // Handle dictation if Globe/Fn is one of the dictation hotkeys
       const dictationUsesGlobe = hotkeyManager.getSlotHotkeys("dictation").some(isGlobeLikeHotkey);
       if (dictationUsesGlobe) {
         if (mainWindowLive && windowManager.isDictationProcessing()) {
           debugLogger?.debug("[Globe] Ignored — dictation processing");
         } else if (mainWindowLive) {
-          // Capture target app PID BEFORE showing the overlay
-          if (textEditMonitor) textEditMonitor.captureTargetPid();
           const activationMode = windowManager.getActivationMode();
           if (activationMode === "push") {
+            if (textEditMonitor) textEditMonitor.captureTargetPid();
             const now = Date.now();
             if (now - globeLastStopTime < POST_STOP_COOLDOWN_MS) {
               debugLogger?.debug("[Globe] Ignored — cooldown active");
@@ -1715,7 +1721,7 @@ async function startApp() {
               }
             }, MIN_HOLD_DURATION_MS);
           } else {
-            windowManager.sendToggleDictation();
+            globeDoubleTap.down(performance.now());
           }
         } else {
           debugLogger?.debug("[Globe] Ignored — mainWindow not live");
@@ -1770,6 +1776,21 @@ async function startApp() {
         }
       }
 
+      if (
+        !hotkeyManager.isInListeningMode() &&
+        hotkeyManager.getSlotHotkeys("dictation").some(isGlobeLikeHotkey) &&
+        windowManager.getActivationMode() !== "push" &&
+        isLiveWindow(windowManager.mainWindow) &&
+        !windowManager.isDictationProcessing()
+      ) {
+        if (globeDoubleTap.up(performance.now())) {
+          if (textEditMonitor && !windowManager.isDictating()) textEditMonitor.captureTargetPid();
+          windowManager.sendToggleDictation();
+        }
+      } else {
+        globeDoubleTap.reset();
+      }
+
       // Fn release also stops compound push-to-talk for Fn+F-key hotkeys
       windowManager.handleMacPushModifierUp("fn");
     });
@@ -1780,6 +1801,7 @@ async function startApp() {
     // Only the bare-Fn path uses globeKeyDownTime/globeKeyIsRecording, so compound
     // Fn-hotkey push-to-talk and tap mode are untouched.
     globeKeyManager.on("globe-interrupted", () => {
+      globeDoubleTap.reset();
       if (globeKeyDownTime === 0 && !globeKeyIsRecording) {
         return;
       }
@@ -2019,6 +2041,7 @@ async function startApp() {
 
     // Reset native key state when hotkey changes
     ipcMain.on("hotkey-changed", (_event, _newHotkey) => {
+      globeDoubleTap.reset();
       globeKeyDownTime = 0;
       globeKeyIsRecording = false;
       globeLastStopTime = 0;

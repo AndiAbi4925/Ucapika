@@ -174,6 +174,7 @@ export default function AgentWindow() {
   const chatBusyRef = useRef(chatBusy);
   chatBusyRef.current = chatBusy;
   const editTargetRef = useRef<SelectionEditTarget | null>(null);
+  const selectionOnlyRef = useRef(false);
   const caretRef = useRef<{ press: number; sessionId: string } | null>(null);
   const caretDeliveryRef = useRef<string | null>(null);
   const cancelCaretDelivery = useCallback((): void => {
@@ -486,6 +487,7 @@ export default function AgentWindow() {
       if (dropped() || take !== takeRef.current || press !== pressRef.current) return;
       pressRef.current += 1;
       const target = editTargetRef.current;
+      const selectionOnly = selectionOnlyRef.current;
       editTargetRef.current = null;
       const caret = caretRef.current?.press === press ? caretRef.current : null;
       caretRef.current = null;
@@ -503,6 +505,13 @@ export default function AgentWindow() {
               isCloudAgent: isCloudDictationAgentMode(),
             }).reachable))
       ) {
+        if (selectionOnly) {
+          if (target?.kind === "external") {
+            void window.electronAPI?.cancelSelectionEdit?.(target.sessionId).catch(() => {});
+          }
+          dispatch({ type: "notice", notice: "hooks.audioRecording.selectionEditing.unavailable" });
+          return;
+        }
         submit(text, false, caret ? { ...extras, caretSessionId: caret.sessionId } : extras);
         return;
       }
@@ -525,6 +534,14 @@ export default function AgentWindow() {
         });
         if (!current()) return;
         if (replacement === null) {
+          if (selectionOnly) {
+            cancelReplacement();
+            dispatch({
+              type: "notice",
+              notice: "hooks.audioRecording.selectionEditing.editInstruction",
+            });
+            return;
+          }
           busyRef.current = chatBusyRef.current;
           submit(text, false, {
             ...extras,
@@ -575,6 +592,7 @@ export default function AgentWindow() {
         }
         dispatch({ type: "setContext", context: null });
         dispatch({ type: "setAttachment", attachment: null });
+        if (selectionOnly) hideKeepingChatRef.current();
       } catch {
         if (current()) {
           // The request waits in the composer, so a failed edit loses nothing.
@@ -645,7 +663,7 @@ export default function AgentWindow() {
   // Another app's selection and a screenshot, read at the press, ride with
   // the request it starts.
   const capturePressContext = useCallback(
-    (external: boolean, card: SelectionEditTarget | null) => {
+    (external: boolean, card: SelectionEditTarget | null, selectionOnly: boolean) => {
       const press = ++pressRef.current;
       const isCurrent = () => press === pressRef.current;
       editTargetRef.current = card;
@@ -656,7 +674,7 @@ export default function AgentWindow() {
         external
           ? window.electronAPI?.captureSelectedText?.({
               // Only an answer that can be pasted needs the writable-field probe.
-              probeEditable: getSettings().autoPasteEnabled,
+              probeEditable: !selectionOnly && getSettings().autoPasteEnabled,
             })
           : null
       )
@@ -703,16 +721,19 @@ export default function AgentWindow() {
               notice: "hooks.audioRecording.selectionEditing.unavailable",
             });
         });
-      const screenshot = captureRequestScreen().then((attachment) => {
-        if (isCurrent() && attachment) dispatch({ type: "setAttachment", attachment });
-      });
+      const screenshot = (selectionOnly ? Promise.resolve(null) : captureRequestScreen()).then(
+        (attachment) => {
+          if (isCurrent() && attachment) dispatch({ type: "setAttachment", attachment });
+        }
+      );
       pressCaptureRef.current = Promise.all([selection, screenshot]);
+      return selection.then(() => isCurrent() && editTargetRef.current !== null);
     },
     [cancelCaretDelivery, dispatch]
   );
 
   const startListening = useCallback(
-    async ({ external = false } = {}) => {
+    async ({ external = false, selectionOnly = false } = {}) => {
       if (refuseIfRestricted()) return;
       const card = external ? null : selectedApprovalField();
       // Only a selected draft field can be edited while its turn waits on Send.
@@ -723,7 +744,12 @@ export default function AgentWindow() {
         return;
       }
       stopReading();
-      capturePressContext(external, card);
+      selectionOnlyRef.current = selectionOnly;
+      const selected = capturePressContext(external, card, selectionOnly);
+      if (selectionOnly && !(await selected)) {
+        dispatch({ type: "notice", notice: "hooks.audioRecording.selectionEditing.selectText" });
+        return;
+      }
       takeRef.current += 1;
       dispatch({ type: "useVoice" });
       if ((await voice.start()) === "refused") {
@@ -792,7 +818,7 @@ export default function AgentWindow() {
   }, [dispatch, hideSurface, newChat]);
 
   const handleHotkey = useCallback(
-    ({ external }: { external: boolean }) => {
+    ({ external, selectionOnly = false }: { external: boolean; selectionOnly?: boolean }) => {
       if (refuseIfRestricted()) return;
       setRefusal(null);
       // The second press sends what was said.
@@ -815,7 +841,7 @@ export default function AgentWindow() {
         openedByTakeRef.current = true;
         dispatch({ type: "show", layout: "pill", input: "voice" });
       }
-      void startListening({ external });
+      void startListening({ external, selectionOnly });
     },
     [busy, dispatch, editingSelection, listening, refuseIfRestricted, startListening, voice]
   );

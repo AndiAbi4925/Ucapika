@@ -1061,6 +1061,8 @@
         "descriptionClipboardFailed": "A modifier key (like Ctrl or Shift) was still held down, so the text was not pasted, and it could not be copied to the clipboard either."
       },
       "selectionEditing": {
+        "selectText": "Select editable text before using voice edit.",
+        "editInstruction": "Say how to rewrite the selection.",
         "notAppliedTitle": "Selection edit not applied",
         "changed": "The selected text or target app changed while OpenWhispr was processing. Nothing was replaced.",
         "expired": "The selection edit took too long and expired. Select the text and try again.",
