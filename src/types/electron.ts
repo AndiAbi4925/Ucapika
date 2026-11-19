@@ -1759,6 +1759,7 @@ declare global {
   interface Window {
     commitHeldSpaceDeletes?: () => Promise<void>;
     electronAPI: {
+      readonly product?: "ucapika";
       // Basic window operations
       setOnboardingWindowMode?: (
         mode: "compact" | "expanded" | "local-setup" | "restore"

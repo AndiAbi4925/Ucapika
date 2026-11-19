@@ -97,14 +97,8 @@ function SpeechFallbackSettings() {
   }
 
   function toggleFallback() {
-    const settings = useSettingsStore.getState();
-    if (enabled) {
-      settings.setAllowOpenAIFallback(false);
-    } else if (allowed && key) {
-      settings.setCloudTranscriptionProvider("openai");
-      settings.setCloudTranscriptionModel("gpt-4o-mini-transcribe");
-      settings.setCloudTranscriptionMode("byok");
-      settings.setAllowOpenAIFallback(true);
+    if (enabled || (allowed && key)) {
+      useSettingsStore.getState().setAllowOpenAIFallback(!enabled);
     }
   }
 

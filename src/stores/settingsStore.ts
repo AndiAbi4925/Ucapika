@@ -7,6 +7,11 @@ import { RETIRED_TINFOIL_MODEL_NAMES } from "../config/retiredCloudModelPolicy.j
 import { create } from "zustand";
 import { GENERATE_NOTES_KEY } from "../helpers/builtinActions";
 import { API_ENDPOINTS } from "../config/constants";
+import {
+  initializeUcapikaPreferences,
+  isUcapikaDesktop,
+  UCAPIKA_DICTATION_ROUTES,
+} from "../config/ucapikaPreferences";
 import i18n, { normalizeUiLanguage } from "../i18n";
 import { readStoredAccountScopeUserId } from "../lib/authAccountScope";
 import { ensureAgentNameInDictionary } from "../utils/agentName";
@@ -1788,6 +1793,10 @@ function syncAfterLocalWrite(method: "syncDictionaryNow" | "syncSnippetsNow"): v
   });
 }
 
+// Run after the inherited migrations and before any window hydrates the store.
+// An entry-point import runs after shared chunks in a production build.
+if (isBrowser && isUcapikaDesktop()) initializeUcapikaPreferences(localStorage);
+
 export const useSettingsStore = create<SettingsState>()((set, get) => ({
   uiLanguage: normalizeUiLanguage(
     isBrowser ? localStorage.getItem("uiLanguage") || i18n.language : null
@@ -3493,6 +3502,7 @@ export function selectPolicyEffectiveSettings(
   state: SettingsState,
   policyState: PolicyDecisionSnapshot
 ): SettingsState {
+  if (isUcapikaDesktop()) state = { ...state, ...UCAPIKA_DICTATION_ROUTES };
   if (policyState.status === "idle" || policyState.status === "unmanaged") return state;
   if (policyState.status !== "managed" || !policyState.policy) return state;
 

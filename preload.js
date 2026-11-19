@@ -63,6 +63,7 @@ const registerListener = (channel, handlerFactory) => {
 };
 
 contextBridge.exposeInMainWorld("electronAPI", {
+  product: "ucapika",
   initialModelRegistrySnapshot: ipcRenderer.sendSync?.("model-registry-initial"),
   getModelRegistry: () => ipcRenderer.invoke("get-model-registry"),
   onModelRegistryUpdated: registerListener(
