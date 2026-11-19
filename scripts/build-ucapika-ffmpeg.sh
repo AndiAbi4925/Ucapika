@@ -50,6 +50,9 @@ codecs="$work/codecs"
 )
 (
   cd "$work/lame-3.100"
+  # The 3.100 release lists a private symbol in its shared-library exports.
+  sed '/^lame_init_old$/d' include/libmp3lame.sym > include/libmp3lame.sym.tmp
+  mv include/libmp3lame.sym.tmp include/libmp3lame.sym
   ./configure --prefix="$codecs" --disable-frontend --enable-shared --disable-static
   make -j"$jobs"
   make install
