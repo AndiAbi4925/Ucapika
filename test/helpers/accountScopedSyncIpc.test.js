@@ -14,6 +14,7 @@ const Module = require("node:module");
 const { createDb } = require("./harness/db.js");
 const { call } = require("./harness/cliBridge.js");
 const { withDevicePolicy } = require("./harness/devicePolicy");
+const { withProductCollectors } = require("./harness/productCollectors");
 
 const handlersModulePath = require.resolve("../../src/helpers/ipcHandlers");
 const originalLoad = Module._load;
@@ -123,7 +124,9 @@ test.before(() => {
   const fakeThis = new Proxy(target, {
     get: (value, property) => (property in value ? value[property] : anything()),
   });
-  Ctor.prototype.setupHandlers.call(withDevicePolicy(fakeThis));
+  withProductCollectors(() => {
+    Ctor.prototype.setupHandlers.call(withDevicePolicy(fakeThis));
+  });
   backgroundProductRequest = target.productEvents.request;
   handleAuthTokenChange = (state) => Ctor.prototype._handleAuthTokenChange.call(fakeThis, state);
 });
