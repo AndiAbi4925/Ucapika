@@ -20,6 +20,8 @@ const configuration = execFileSync(converter, ["-buildconf"], { encoding: "utf8"
 if (
   !configuration.includes("--disable-autodetect") ||
   !configuration.includes("--enable-shared") ||
+  !configuration.includes("--enable-libmp3lame") ||
+  !configuration.includes("--enable-libopus") ||
   /--enable-(?:nonfree|gpl)/.test(configuration)
 ) {
   throw new Error("Run bash scripts/build-ucapika-ffmpeg.sh before packaging.");

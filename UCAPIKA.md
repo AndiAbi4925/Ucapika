@@ -20,7 +20,7 @@ Focus a text field before dictating. For editing, select editable text in the ta
 
 ## Build from source
 
-Use Node.js 24 and the native platform toolchain. On macOS install Xcode Command Line Tools. On Windows run the FFmpeg preparation script in an MSYS2 UCRT64 shell with GCC, curl, tar, and make. Run packaging in a regular Windows shell with the MSVC build environment for native helpers.
+Use Node.js 24 and the native platform toolchain. On macOS install Xcode Command Line Tools and `pkg-config` (for example, `brew install pkgconf`). On Windows run the FFmpeg preparation script in an MSYS2 UCRT64 shell with GCC, curl, tar, make, and `mingw-w64-ucrt-x86_64-pkgconf`. Run packaging in a regular Windows shell with the MSVC build environment for native helpers.
 
 ```bash
 npm ci
@@ -53,4 +53,4 @@ The macOS build is ad-hoc signed by default. The Windows installer is unsigned b
 
 OpenWhispr is MIT-licensed. The original [LICENSE](LICENSE) and copyright notice are included. The [Whisper code and weights](https://github.com/openai/whisper) and [llama.cpp](https://github.com/ggml-org/llama.cpp) use MIT. [Qwen3.5 2B](https://huggingface.co/Qwen/Qwen3.5-2B/blob/main/LICENSE) uses Apache 2.0, with retention of license and attribution required on redistribution. [Silero VAD](https://github.com/snakers4/silero-vad/blob/master/LICENSE) is MIT. [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx/blob/master/LICENSE) uses Apache 2.0. Inter and Instrument Serif are distributed with their SIL Open Font License notices in `src/assets/fonts/ucapika`. Electron includes Chromium’s third-party notices in the app bundle.
 
-The packaged FFmpeg converter uses [FFmpeg 7.1.4](https://github.com/FFmpeg/FFmpeg/tree/n7.1.4) under LGPL 2.1 or later. Its source archive, build script and license ship in the app’s `bin/ffmpeg-source` resources. FFmpeg runs as a separate process and uses shared libraries.
+The packaged converter uses FFmpeg 7.1.4 (LGPL 2.1 or later) with shared libraries for LAME 3.100 (LGPL 2.0 or later) and Opus 1.6.1 (BSD 3-Clause). The source archives, build script, and license notices ship in the app’s `bin/ffmpeg-source` resources. FFmpeg runs as a separate process. [FFmpeg](https://ffmpeg.org/legal.html), [LAME](https://lame.sourceforge.io/), [Opus](https://opus-codec.org/license/)

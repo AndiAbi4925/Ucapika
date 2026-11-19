@@ -43,8 +43,11 @@ jobs:
         uses: msys2/setup-msys2@v2
         with:
           msystem: UCRT64
-          install: curl make tar mingw-w64-ucrt-x86_64-gcc
+          install: curl make tar mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-pkgconf
       - run: npm ci
+      - name: Ensure pkg-config is available on macOS
+        if: matrix.platform == 'mac'
+        run: command -v pkg-config || brew install pkgconf
       - name: Build the audio converter on macOS
         if: matrix.platform == 'mac'
         run: bash scripts/build-ucapika-ffmpeg.sh
@@ -52,6 +55,8 @@ jobs:
         if: matrix.platform == 'win'
         shell: msys2 {0}
         run: bash scripts/build-ucapika-ffmpeg.sh
+      - name: Exercise the bundled converter
+        run: node --import tsx --test test/helpers/audioSegmentMerge.test.js test/helpers/providerUploadAudio.test.js test/helpers/managedAudioFileTranscription.test.js
       - name: Package installer
         env:
           GITHUB_TOKEN: ${{ github.token }}

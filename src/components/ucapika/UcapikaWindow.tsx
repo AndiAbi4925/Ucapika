@@ -587,6 +587,8 @@ export function UcapikaWindow() {
                   ],
                   ["llama.cpp", "MIT", "https://github.com/ggml-org/llama.cpp/blob/master/LICENSE"],
                   ["FFmpeg", "LGPL 2.1 or later", "https://ffmpeg.org/legal.html"],
+                  ["LAME", "LGPL 2.0 or later", "https://lame.sourceforge.io/"],
+                  ["Opus", "BSD 3-Clause", "https://opus-codec.org/license/"],
                   [
                     "Silero VAD",
                     "MIT",
