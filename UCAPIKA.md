@@ -9,6 +9,8 @@ Ucapika is a local-first desktop dictation and voice-editing app built from Open
 3. On Windows x64, unzip the Windows artifact and run the NSIS installer. If SmartScreen flags your trusted unsigned build, choose **More info** and **Run anyway** when available. [Microsoft SmartScreen guide](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/smartscreen-reputation)
 4. At first launch, enable Microphone and, on macOS, Accessibility. On macOS versions that show **Device Control and Data Access**, find Ucapika there under **Privacy & Security**. Select a speech model and download it. Install the writing model to enable voice editing and model-based cleanup. Click **Finish setup**.
 
+An ad-hoc signed update can leave an old device-control entry enabled in System Settings. If Ucapika still shows **Enable Accessibility**, remove its entry using **−**, add `/Applications/Ucapika.app` using **+**, turn on the new entry, and reopen Ucapika.
+
 ## Shortcuts
 
 | Action | macOS | Windows |
