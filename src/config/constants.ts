@@ -1,3 +1,5 @@
+import { isUcapikaDesktop } from "./ucapikaPreferences";
+
 // Split query/hash so path-suffix stripping and later joins operate on the
 // path only. Provider docs and Azure/gateway pastes often include ?api-version=
 // (or similar) on a full /chat/completions URL (#1309).
@@ -175,7 +177,9 @@ export const CACHE_CONFIG = {
 } as const;
 
 // OpenWhispr Cloud API
-export const OPENWHISPR_API_URL = (env.VITE_OPENWHISPR_API_URL as string) || "";
+export const OPENWHISPR_API_URL = isUcapikaDesktop()
+  ? ""
+  : (env.VITE_OPENWHISPR_API_URL as string) || "";
 
 // Retry Configuration
 export const RETRY_CONFIG = {

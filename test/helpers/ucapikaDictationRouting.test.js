@@ -73,3 +73,19 @@ test("Ucapika repairs hosted defaults before hydration and sends cleanup to the 
   assert.equal(calls[0].model, "qwen3.5-2b-q4_k_m");
   assert.match(calls[0].prompt, /um the draft is ready/);
 });
+
+test("Ucapika answers session checks locally without calling the hosted API", async (t) => {
+  installBrowserGlobals(t, { window: { electronAPI: { product: "ucapika" } } });
+  const network = t.mock.method(globalThis, "fetch", async () => {
+    throw new Error("Unexpected network request from the standalone app");
+  });
+  const vite = await createRendererServer(t);
+  const { authClient } = await vite.ssrLoadModule("/lib/auth.ts");
+  const { OPENWHISPR_API_URL } = await vite.ssrLoadModule("/config/constants.ts");
+
+  const session = await authClient.getSession();
+  assert.equal(session.data, null);
+  assert.equal(session.error, null);
+  assert.equal(OPENWHISPR_API_URL, "");
+  assert.equal(network.mock.callCount(), 0);
+});

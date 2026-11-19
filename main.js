@@ -1077,6 +1077,7 @@ async function exchangeSignedTokenForRawBearer(signedToken) {
 // token, store it, and remove the cookie. Non-fatal — failures fall through
 // to the normal sign-in flow.
 async function migrateCookieToBearerToken() {
+  if (app.getName() === "Ucapika") return;
   const tokenStore = require("./src/helpers/tokenStore");
   if (tokenStore.get()) return;
 
@@ -1131,6 +1132,7 @@ async function applySessionTokenAndRefresh(token) {
 }
 
 async function handleOAuthDeepLink(deepLinkUrl) {
+  if (app.getName() === "Ucapika") return;
   try {
     const parsed = new URL(deepLinkUrl);
     const bearerToken = parsed.searchParams.get("bearer_token");
@@ -1185,7 +1187,7 @@ function writeCorsHeaders(res) {
 }
 
 function startAuthBridgeServer() {
-  if (APP_CHANNEL !== "development" || authBridgeServer) {
+  if (app.getName() === "Ucapika" || APP_CHANNEL !== "development" || authBridgeServer) {
     return;
   }
 

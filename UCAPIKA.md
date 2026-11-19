@@ -1,6 +1,6 @@
 # Ucapika
 
-Ucapika is a local-first desktop dictation and voice-editing app built from OpenWhispr. It keeps transcription history in the existing embedded SQLite database and uses the upstream local inference sidecars. No separate service or account is required for the default workflow.
+Ucapika is a local-first desktop dictation and voice-editing app built from OpenWhispr. It runs independently of OpenWhispr's hosted API and authentication. Transcription history is kept in embedded SQLite, and on-device inference runs in local sidecar processes.
 
 ## Install
 

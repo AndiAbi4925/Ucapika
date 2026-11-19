@@ -14,8 +14,16 @@ import {
 import { clearOfflineAccountProfile } from "./offlineAccountProfile";
 import { refreshEffectivePolicy, usePolicyStore } from "../stores/policyStore";
 import i18n from "../i18n";
+import { isUcapikaDesktop } from "../config/ucapikaPreferences";
+
+const standalone = isUcapikaDesktop();
 
 async function deviceAwareAuthFetch(...args: Parameters<typeof fetch>): Promise<Response> {
+  if (standalone) {
+    const request = args[0] instanceof Request ? args[0].url : String(args[0]);
+    if (/\/get-session(?:[?#]|$)/.test(request)) return Response.json(null);
+    return Response.json({ message: "Ucapika runs without an account." }, { status: 403 });
+  }
   if (window.electronAPI?.getEffectivePolicy && !usePolicyStore.getState().deviceReady)
     await refreshEffectivePolicy();
   const policy = usePolicyStore.getState();
@@ -43,10 +51,14 @@ export const authClient = createAuthClient({
       "x-openwhispr-source": "desktop",
       ...(REGISTRATION_OS ? { "x-openwhispr-os": REGISTRATION_OS } : {}),
     },
-    onRequest: prepareAuthRequest,
-    onResponse: handleAuthRequestResponse,
-    onSuccess: handleAuthRequestSuccess,
-    onError: handleAuthRequestError,
+    ...(standalone
+      ? { retry: 0 }
+      : {
+          onRequest: prepareAuthRequest,
+          onResponse: handleAuthRequestResponse,
+          onSuccess: handleAuthRequestSuccess,
+          onError: handleAuthRequestError,
+        }),
   },
 });
 

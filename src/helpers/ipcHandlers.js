@@ -8203,17 +8203,22 @@ class IPCHandlers {
       return {};
     })();
 
+    const standalone = app.getName?.() === "Ucapika";
     const getApiUrl = () =>
-      process.env.OPENWHISPR_API_URL ||
-      process.env.VITE_OPENWHISPR_API_URL ||
-      runtimeEnv.VITE_OPENWHISPR_API_URL ||
-      "";
+      standalone
+        ? ""
+        : process.env.OPENWHISPR_API_URL ||
+          process.env.VITE_OPENWHISPR_API_URL ||
+          runtimeEnv.VITE_OPENWHISPR_API_URL ||
+          "";
 
     const getAuthUrl = () =>
-      process.env.AUTH_URL ||
-      process.env.VITE_AUTH_URL ||
-      runtimeEnv.VITE_AUTH_URL ||
-      "https://auth.openwhispr.com";
+      standalone
+        ? ""
+        : process.env.AUTH_URL ||
+          process.env.VITE_AUTH_URL ||
+          runtimeEnv.VITE_AUTH_URL ||
+          "https://auth.openwhispr.com";
 
     const getSessionCookiesFromWindow = async (win) => {
       const scopedUrls = [getAuthUrl(), getApiUrl()].filter(Boolean);
